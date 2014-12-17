@@ -32,15 +32,15 @@ class  PROCCPU(object):
 
 	@staticmethod
 	def read_process_cpu_usage(stat_path):
-    with open(stat_path) as stat_file:
-    	return next(stat_file)
+    	with open(stat_path) as stat_file:
+    		return next(stat_file)
 
     @staticmethod
-	def parse_process_cpu_usage(cpu_stat_line)
-	token = cpu_stat_line.split()
-	utime = token[13] 
-	stime = token[14]  
-    return (utime,stime)
+	def parse_process_cpu_usage(cpu_stat_line):
+		token = cpu_stat_line.split()
+		utime = token[13] 
+		stime = token[14]  
+    	return (utime,stime)
 
 
 

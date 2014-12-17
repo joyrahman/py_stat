@@ -31,11 +31,11 @@ class  SYSTEMCPU(object):
 
 	@staticmethod
 	def read_system_cpu_usage(stat_path):
-    with open(stat_path) as stat_file:
-    	return next(stat_file)
+    	with open(stat_path) as stat_file:
+    		return next(stat_file)
 
     @staticmethod
-	def parse_system_cpu_usage(cpu_stat_line)  
-    return sum(float(time) for time in islice(cpu_stat_line.split(),1,None))
+	def parse_system_cpu_usage(cpu_stat_line):  
+    	return sum(float(time) for time in islice(cpu_stat_line.split(),1,None))
 
 
