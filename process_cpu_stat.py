@@ -32,7 +32,7 @@ class  PROCCPU(object):
 
 	@staticmethod
 	def read_process_cpu_usage(stat_path):
-    	with open(stat_path) as stat_file:
+	    with open(stat_path) as stat_file:
     		return next(stat_file)
 
     @staticmethod
