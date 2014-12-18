@@ -35,7 +35,7 @@ class  SYSTEMCPU(object):
     def read_system_cpu_usage(stat_path):
         with open(stat_path) as stat_file:
             output = stat_file.readline()
-        return next(stat_file)
+        return next(output)
 
     @staticmethod
     def parse_system_cpu_usage(cpu_stat_line):
