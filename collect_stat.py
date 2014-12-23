@@ -1,6 +1,7 @@
 import time
-from process_cpu_stat import PROCCPU as process
-from system_cpu_stat import SYSTEMCPU as system
+import process_memory_stat as proc_mem
+from process_cpu_stat import PROCCPU as proc_cpu
+from system_cpu_stat import SYSTEMCPU as system_cpu
 
 # stores parameter set from config file
 env_param = {}
@@ -26,13 +27,14 @@ def main():
     pid  = env_param['pid']
 
     # sensors defn
-    proc = process(pid)
-    sys = system()
+    proc = proc_cpu(pid)
+    sys = system_cpu()
     
     #data container
     process_cpu_info = []
     system_cpu_info = []
-
+    process_mem_info = []
+    #get_mem_usage(pid, mem_type='VmSize:', since = 0.0)
 
     #collect the data from the sensors
     try:
@@ -41,12 +43,14 @@ def main():
             # sleep for a second
             process_cpu_info.append(proc.get())
             system_cpu_info.append(sys.get())
+            process_mem_info.append(proc_mem.get_mem_usage(pid))
             time.sleep(1)
     except KeyboardInterrupt:
         print " \n <Interrupted.Writing to disk>"
     finally:        
         print process_cpu_info
         print system_cpu_info
+        print process_mem_info
 
 
 
