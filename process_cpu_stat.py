@@ -41,7 +41,7 @@ class  PROCCPU(object):
         token = cpu_stat_line.split()
         utime = token[13]
         stime = token[14]
-        return (utime,stime)
+        return [utime,stime]
 
 
 

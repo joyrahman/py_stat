@@ -1,4 +1,6 @@
 import os
+from psutil import virtual_memory
+
 
 #_proc_status = '/proc/%d/status' % os.getpid()
 
@@ -9,8 +11,9 @@ def get_mem_usage(pid, mem_type='VmSize:', since = 0.0):
     proc_file = '/proc/{}/status'.format(pid)
     return _VmB(proc_file,mem_type) - since
 
-def system_mem_size():
-    pass
+def get_system_mem_size():
+    mem = virtual_memory()
+    return mem.total
 
 def _VmB(proc_file, VmKey):
     #global _proc_status, _scale

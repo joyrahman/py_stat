@@ -2,7 +2,8 @@ import time
 import process_memory_stat as proc_mem
 from process_cpu_stat import PROCCPU as proc_cpu
 from system_cpu_stat import SYSTEMCPU as system_cpu
-
+import csv
+import sys
 # stores parameter set from config file
 env_param = {}
 
@@ -17,40 +18,67 @@ def print_dict(dict_param=env_param):
     for key in dict_param.keys():
         print key,"=",dict_param[key]
     
+def write_to_csv(pid="",csv_data):
+    #pass
+    print csv_data
+    #file name format : procname_pid_time.csv
+
+    output_file_name = get_process_name(pid)+\
+            "_"+pid+"_"+str(time.time())+".csv" 
+    
+    with open(output_file_name,'w',newline='') as fp:
+        a = csv.writer(fp, delimiter=',')
+        a.writerows(csv_data)
 
 
-def main():
+def get_process_name(pid):
+    return "dummy"
 
-    # environmental variable 
+def get_stat(pid,timer = 120 ):
+    main(pid,timer)
+
+
+def main(pid="", timer=""):
+
+    #set  environmental variable if param are not defined 
     read_conf("stat.conf")
-    timer = int(env_param['duration'])
-    pid  = env_param['pid']
-
+    if not pid:
+        pid  = env_param['pid']
+    if not timer:
+        timer = int(env_param['duration'])
+    
     # sensors defn
     proc = proc_cpu(pid)
     sys = system_cpu()
     
     #data container
-    process_cpu_info = []
-    system_cpu_info = []
-    process_mem_info = []
+    csv_data = []
     #get_mem_usage(pid, mem_type='VmSize:', since = 0.0)
 
     #collect the data from the sensors
     try:
-        for i in range (1, timer):
-            # read the param
-            # sleep for a second
-            process_cpu_info.append(proc.get())
-            system_cpu_info.append(sys.get())
-            process_mem_info.append(proc_mem.get_mem_usage(pid))
+        for i in range (0, timer):
+            process_cpu_reading_user,process_cpu_reading_karnel =  proc.get()
+            system_cpu_reading  =  sys.get()
+            process_memory_reading = proc_mem.get_mem_usage(pid)
+            system_memory_reading =  proc_mem.get_system_mem_size()
+            csv_data.append([process_cpu_reading_user, \
+                    process_cpu_reading_karnel, \
+                    system_cpu_reading, \
+                    process_memory_reading,\
+                    system_memory_reading])
             time.sleep(1)
     except KeyboardInterrupt:
         print " \n <Interrupted.Writing to disk>"
+    
+    except Exception as Inst:
+        print ":("
+        print Inst
+    
     finally:        
-        print process_cpu_info
-        print system_cpu_info
-        print process_mem_info
+        write_to_csv(csv_data)
+
+        
 
 
 
