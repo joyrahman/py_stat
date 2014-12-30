@@ -46,12 +46,12 @@ def get_pid(process_name):
                 log_handler.info("escaped")
                 pass
             else:
-                log_handler.info(x)
+                #log_handler.info(x)
                 add_to_dict(x)
                 #pids.append(int(x[10:15]))
                 #process[int(x[10:15])] = x[49:]
         except Exception as inst:
-            print inst
+            #print inst
             pass
 
     #return the list if not null

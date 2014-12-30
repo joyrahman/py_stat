@@ -1,9 +1,9 @@
-import time
 import process_memory_stat as proc_mem
 from process_cpu_stat import PROCCPU as proc_cpu
 from system_cpu_stat import SYSTEMCPU as system_cpu
-import csv
 import sys
+import write_to_csv as csv
+import time
 # stores parameter set from config file
 env_param = {}
 
@@ -17,28 +17,13 @@ def read_conf(config_file):
 def print_dict(dict_param=env_param):
     for key in dict_param.keys():
         print key,"=",dict_param[key]
-    
-def write_to_csv(pid="",csv_data):
-    #pass
-    print csv_data
-    #file name format : procname_pid_time.csv
-
-    output_file_name = get_process_name(pid)+\
-            "_"+pid+"_"+str(time.time())+".csv" 
-    
-    with open(output_file_name,'w',newline='') as fp:
-        a = csv.writer(fp, delimiter=',')
-        a.writerows(csv_data)
 
 
-def get_process_name(pid):
-    return "dummy"
-
-def get_stat(pid,timer = 120 ):
-    main(pid,timer)
+def get_stat(pid, proc_name, timer = 120 ):
+    main(pid, proc_name, timer)
 
 
-def main(pid="", timer=""):
+def main(pid="", proc_name="", timer=""):
 
     #set  environmental variable if param are not defined 
     read_conf("stat.conf")
@@ -62,6 +47,8 @@ def main(pid="", timer=""):
             system_cpu_reading  =  sys.get()
             process_memory_reading = proc_mem.get_mem_usage(pid)
             system_memory_reading =  proc_mem.get_system_mem_size()
+            
+            # csv format: user_cpu, kernel_cpu, sys_cpu, proc_mem, sys_mem
             csv_data.append([process_cpu_reading_user, \
                     process_cpu_reading_karnel, \
                     system_cpu_reading, \
@@ -76,9 +63,9 @@ def main(pid="", timer=""):
         print Inst
     
     finally:        
-        write_to_csv(csv_data)
-
-        
+        #write_to_csv(csv_data)
+        #return csv_data
+        csv.write_to_csv(pid,proc_name,csv_data)
 
 
 

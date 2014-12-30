@@ -24,7 +24,7 @@ class  PROCCPU(object):
     """docstring for  CPUUSage"""
     def __init__(self, pid):
         self.pid = pid
-        self.stat_path = "/proc/"+pid+"/stat"
+        self.stat_path = "/proc/"+ str(pid) +"/stat"
 
     def get(self):
         return self.parse_process_cpu_usage(self.read_process_cpu_usage(self.stat_path))
