@@ -31,8 +31,8 @@ def worker(pid, proc_name, timer = 120):
             logging.debug('Ending')
             time.sleep(i + 2)
             pid_queue.task_done()
-    except Exception as except:
-        print except
+    except Exception as Inst:
+        print "Got some Error"
 
 def run_threads(pids):
     #threads = []
@@ -85,7 +85,7 @@ def main():
     print '*** Main thread waiting'
     pid_queue.join()
     print '*** Done'
-
+    time.sleep(1)
     '''
     if pid is not null, then insert the pid to the queue
     '''
