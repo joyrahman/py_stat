@@ -11,12 +11,24 @@ logging.basicConfig(level=logging.DEBUG,\
 
 
 threads = []
-q = Queue()
-
+pid_queue = Queue()
+'''
 def worker(pid, proc_name, timer=120):
     logging.debug('Starting')
     proc_data.get_stat(str(pid), proc_name, timer)
     logging.debug('Ending')
+
+'''
+
+def worker(pid, proc_name, timer = 120):
+
+    while True:
+        pid = pid_queue.get()
+        logging.debug('starting')
+        proc_data.get_stat(str(pid), proc_name, timer)
+        logging.debug('Ending')
+        time.sleep(i + 2)
+        q.task_done()
 
 
 def run_threads(pids):
@@ -44,20 +56,41 @@ def pid_exist(proc_name):
 
 
 def main():
+
+    ''' parameters '''
     proc_name = "apache"
     timer =  13
-    
+    number_of_worker =  3
+
     # get the matching pids to proc_name
     pids =  proc_to_pid.get_pid(proc_name)
-    
+
+
+    # Set up some threads to fetch the enclosures
+    for i in range(number_of_worker):
+        t_worker = threading.Thread(target=worker, args=(i, pid_queue,))
+        t_worker.setDaemon(True)
+        t_worker.start()
+
+    # insert the items to queue
+    for pid in pids:
+        pid_queue.put(pid)
+
+
+    # Now wait for the queue to be empty, indicating that we have
+    # processed all of the downloads.
+    print '*** Main thread waiting'
+    pid_queue.join()
+    print '*** Done'
+
     '''
     if pid is not null, then insert the pid to the queue
     '''
-    
+    '''
     if (pid !=-1) and q.empty():
         for item in pid:
             q.put(item)
-
+    '''
   
 
 if __name__ == "__main__":
