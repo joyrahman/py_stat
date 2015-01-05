@@ -4,6 +4,7 @@ import collect_stat as proc_data
 import threading
 import logging
 import time
+import SetQueue
 from Queue import Queue
 
 logging.basicConfig(level=logging.DEBUG,\
@@ -11,7 +12,7 @@ logging.basicConfig(level=logging.DEBUG,\
 
 
 threads = []
-pid_queue = Queue()
+pid_queue = SetQueue()
 '''
 def worker(pid, proc_name, timer=120):
     logging.debug('Starting')
@@ -19,6 +20,27 @@ def worker(pid, proc_name, timer=120):
     logging.debug('Ending')
 
 '''
+
+def queue_injector():
+    try:
+        while True:
+            # get the matching pids to proc_name
+            pids =  proc_to_pid.get_pid(proc_name)
+            # insert the items to queue
+            for pid in pids:
+                # if the pid is not already in Queue, append it
+                pid_queue.put(pid)
+
+            pid = pid_queue.get()
+            print "pid: " + str(pid)
+            logging.debug('starting')
+            proc_data.get_stat(str(pid), proc_name, timer)
+            logging.debug('Ending')
+            time.sleep(i + 2)
+            pid_queue.task_done()
+    except Exception as Inst:
+        print "Got some Error"
+
 
 def worker(pid, proc_name, timer = 120):
     i = pid
