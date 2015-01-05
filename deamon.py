@@ -21,25 +21,20 @@ def worker(pid, proc_name, timer=120):
 
 '''
 
-def queue_injector():
+def queue_injector(proc_name, timer=120):
     try:
         while True:
             # get the matching pids to proc_name
             pids =  proc_to_pid.get_pid(proc_name)
             # insert the items to queue
-            for pid in pids:
-                # if the pid is not already in Queue, append it
-                pid_queue.put(pid)
+            if pids != '-1':
+                for pid in pids:
+                    # if the pid is not already in Queue, append it
+                    pid_queue.put(pid)
 
-            pid = pid_queue.get()
-            print "pid: " + str(pid)
-            logging.debug('starting')
-            proc_data.get_stat(str(pid), proc_name, timer)
-            logging.debug('Ending')
-            time.sleep(i + 2)
-            pid_queue.task_done()
+            time.sleep(2*timer)
     except Exception as Inst:
-        print "Got some Error"
+        print "Got some Error in Queue Injector"
 
 
 def worker(pid, proc_name, timer = 120):
@@ -88,11 +83,16 @@ def main():
     number_of_worker =  5
 
     # get the matching pids to proc_name
-    pids =  proc_to_pid.get_pid(proc_name)
+    #pids =  proc_to_pid.get_pid(proc_name)
     # insert the items to queue
-    for pid in pids:
-        pid_queue.put(pid)
+    #for pid in pids:
+    #    pid_queue.put(pid)
 
+    # thread to insert data to Queue
+
+    data_injector = threading.Thread(target=queue_injector, args=(proc_name,timer))
+    data_injector.setDaemon(True)
+    data_injector.start()
 
     # Set up some threads to fetch the enclosures
     for i in range(number_of_worker):
