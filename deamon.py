@@ -24,6 +24,7 @@ def worker(pid, proc_name, timer = 120):
     i = pid
     while True:
         pid = pid_queue.get()
+        print "pid: " + str(pid)
         logging.debug('starting')
         proc_data.get_stat(str(pid), proc_name, timer)
         logging.debug('Ending')
