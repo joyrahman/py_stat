@@ -28,7 +28,7 @@ def worker(pid, proc_name, timer = 120):
         proc_data.get_stat(str(pid), proc_name, timer)
         logging.debug('Ending')
         time.sleep(i + 2)
-        q.task_done()
+        pid_queue.task_done()
 
 
 def run_threads(pids):
