@@ -21,7 +21,7 @@ def worker(pid, proc_name, timer=120):
 '''
 
 def worker(pid, proc_name, timer = 120):
-
+    i = pid
     while True:
         pid = pid_queue.get()
         logging.debug('starting')
@@ -64,17 +64,17 @@ def main():
 
     # get the matching pids to proc_name
     pids =  proc_to_pid.get_pid(proc_name)
+    # insert the items to queue
+    for pid in pids:
+        pid_queue.put(pid)
 
 
     # Set up some threads to fetch the enclosures
     for i in range(number_of_worker):
-        t_worker = threading.Thread(target=worker, args=(i, pid_queue,))
+        t_worker = threading.Thread(target=worker, args=(i, pid_queue,timer))
         t_worker.setDaemon(True)
         t_worker.start()
 
-    # insert the items to queue
-    for pid in pids:
-        pid_queue.put(pid)
 
 
     # Now wait for the queue to be empty, indicating that we have
