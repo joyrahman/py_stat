@@ -22,15 +22,17 @@ def worker(pid, proc_name, timer=120):
 
 def worker(pid, proc_name, timer = 120):
     i = pid
-    while True:
-        pid = pid_queue.get()
-        print "pid: " + str(pid)
-        logging.debug('starting')
-        proc_data.get_stat(str(pid), proc_name, timer)
-        logging.debug('Ending')
-        time.sleep(i + 2)
-        pid_queue.task_done()
-
+    try:
+        while True:
+            pid = pid_queue.get()
+            print "pid: " + str(pid)
+            logging.debug('starting')
+            proc_data.get_stat(str(pid), proc_name, timer)
+            logging.debug('Ending')
+            time.sleep(i + 2)
+            pid_queue.task_done()
+    except Exception as except:
+        print except
 
 def run_threads(pids):
     #threads = []
@@ -61,7 +63,7 @@ def main():
     ''' parameters '''
     proc_name = "apache"
     timer =  13
-    number_of_worker =  3
+    number_of_worker =  5
 
     # get the matching pids to proc_name
     pids =  proc_to_pid.get_pid(proc_name)
