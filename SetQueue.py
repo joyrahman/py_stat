@@ -1,3 +1,5 @@
+import Queue
+
 class SetQueue(Queue.Queue):
     def _init(self, maxsize):
         self.queue = set()

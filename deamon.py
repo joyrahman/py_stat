@@ -5,14 +5,14 @@ import threading
 import logging
 import time
 import SetQueue
-from Queue import Queue
+#from Queue import Queue
 
 logging.basicConfig(level=logging.DEBUG,\
         format='[%(levelname)s] (%(threadName)-10s) %(message)s',)
 
 
 threads = []
-pid_queue = SetQueue()
+pid_queue = SetQueue.SetQueue()
 '''
 def worker(pid, proc_name, timer=120):
     logging.debug('Starting')
@@ -80,7 +80,7 @@ def main():
     ''' parameters '''
     proc_name = "apache"
     timer =  13
-    number_of_worker =  5
+    number_of_worker =  3
 
     # get the matching pids to proc_name
     #pids =  proc_to_pid.get_pid(proc_name)
@@ -107,7 +107,7 @@ def main():
     print '*** Main thread waiting'
     pid_queue.join()
     print '*** Done'
-    time.sleep(1)
+    time.sleep(100)
     '''
     if pid is not null, then insert the pid to the queue
     '''
