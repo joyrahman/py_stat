@@ -78,8 +78,8 @@ def pid_exist(proc_name):
 def main():
 
     ''' parameters '''
-    proc_name = "apache"
-    timer =  13
+    proc_name = "zerovm"
+    timer =  120
     number_of_worker =  3
 
     # get the matching pids to proc_name
