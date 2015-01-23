@@ -43,7 +43,7 @@ def get_pid(process_name):
     for x in a:
         try:
             if (x.find(filter_1) != -1) or (x.find(filter_2) != -1) :
-                log_handler.info("escaped")
+                #log_handler.info("escaped")
                 pass
             else:
                 #log_handler.info(x)

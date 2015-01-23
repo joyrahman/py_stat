@@ -29,7 +29,7 @@ def queue_injector(proc_name, timer=120):
     pid_list = {}
     try:
         while threading.current_thread().signal:
-	    print "checking pid"
+	    print ".",
             # get the matching pids to proc_name
             pids =  proc_to_pid.get_pid(proc_name)
             # insert the items to queue

@@ -41,7 +41,7 @@ def main():
                 #pids.append(int(x[10:15]))
                 #process[int(x[10:15])] = x[49:]
         except:
-            print ":( "
+            #print ":( "
             pass
     #for each in pids:
     #    print(each)

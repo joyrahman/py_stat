@@ -40,7 +40,7 @@ def main(pid="", proc_name="", timer=""):
     
     # sensors defn
     proc = proc_cpu(pid)
-    sys = system_cpu()
+    sys_info = system_cpu()
     
     #data container
     csv_data = []
@@ -50,7 +50,7 @@ def main(pid="", proc_name="", timer=""):
     try:
         for i in range (0, timer):
             process_cpu_reading_user,process_cpu_reading_karnel =  proc.get()
-            system_cpu_reading  =  sys.get()
+            system_cpu_reading  =  sys_info.get()
             process_memory_reading = proc_mem.get_mem_usage(pid)
             system_memory_reading =  proc_mem.get_system_mem_size()
             current_time = time.clock() 
@@ -61,6 +61,8 @@ def main(pid="", proc_name="", timer=""):
                     process_memory_reading,\
                     system_memory_reading])
             time.sleep(1)
+        # now dumpt the data 
+        csv.write_to_csv(pid,proc_name,csv_data)
     except KeyboardInterrupt:
         print " \n <Interrupted.Writing to disk>"
     
