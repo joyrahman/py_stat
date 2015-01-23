@@ -20,8 +20,13 @@ def worker(pid, proc_name, timer=120):
     logging.debug('Ending')
 
 '''
+def in_queue(item):
+    global pid_queue
+    return item in pid_queue
 
 def queue_injector(proc_name, timer=120):
+    global pid_queue
+    pid_list = {}
     try:
         while threading.current_thread().signal:
 	    print "checking pid"
@@ -33,12 +38,17 @@ def queue_injector(proc_name, timer=120):
             if pids != -1:
                 for pid in pids:
                     # if the pid is not already in Queue, append it
-                    pid_queue.put(pid)
-            	#time.sleep()
+                    #if not in_queue(pid):
+                    if not pid in pid_list.keys():
+                        pid_queue.put(pid)
+                        pid_list[pid] = True
+                    
+                #print "Queue:", pid_queue
+            	#time.sleep(1)
 	        # the process does not exist
-            #elif pids == '-1':
-		    #    time.sleep(1)
-            time.sleep(1)
+            #elif pids == -1:
+		    time.sleep(1)
+            #time.sleep(1)
     except Exception as Inst:
         print Inst
         print "Got some Error in Queue Injector"
@@ -88,7 +98,7 @@ def main():
     ''' parameters '''
     proc_name = "zerovm"
     timer =  120
-    number_of_worker =  3
+    number_of_worker =  10
     threads = []
     # get the matching pids to proc_name
     #pids =  proc_to_pid.get_pid(proc_name)
