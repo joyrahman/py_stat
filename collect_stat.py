@@ -4,6 +4,7 @@ from system_cpu_stat import SYSTEMCPU as system_cpu
 import sys
 import write_to_csv as csv
 import time
+import proc_to_pid
 # stores parameter set from config file
 env_param = {}
 
@@ -22,7 +23,12 @@ def print_dict(dict_param=env_param):
 def get_stat(pid, proc_name, timer = 120 ):
     main(pid, proc_name, timer)
 
-
+def main_sys_arg():
+    proc_name = "zerovm"
+    timer = 240
+    pids = proc_to_pid.get_pid(proc_name)
+    main(pids[0], proc_name, timer)
+    
 def main(pid="", proc_name="", timer=""):
 
     #set  environmental variable if param are not defined 
@@ -47,9 +53,9 @@ def main(pid="", proc_name="", timer=""):
             system_cpu_reading  =  sys.get()
             process_memory_reading = proc_mem.get_mem_usage(pid)
             system_memory_reading =  proc_mem.get_system_mem_size()
-            
-            # csv format: user_cpu, kernel_cpu, sys_cpu, proc_mem, sys_mem
-            csv_data.append([process_cpu_reading_user, \
+            current_time = time.clock() 
+            # csv format: time, user_cpu, kernel_cpu, sys_cpu, proc_mem, sys_mem
+            csv_data.append([current_time,process_cpu_reading_user, \
                     process_cpu_reading_karnel, \
                     system_cpu_reading, \
                     process_memory_reading,\
@@ -72,7 +78,7 @@ def main(pid="", proc_name="", timer=""):
 
 
 if __name__ == '__main__':
-	main()
+	main_sys_arg()
 
 
 

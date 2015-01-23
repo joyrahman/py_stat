@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.DEBUG,\
         format='[%(levelname)s] (%(threadName)-10s) %(message)s',)
 
 
-threads = []
+#threads = []
 pid_queue = SetQueue.SetQueue()
 '''
 def worker(pid, proc_name, timer=120):
@@ -23,33 +23,41 @@ def worker(pid, proc_name, timer=120):
 
 def queue_injector(proc_name, timer=120):
     try:
-        while True:
+        while threading.current_thread().signal:
+	    print "checking pid"
             # get the matching pids to proc_name
             pids =  proc_to_pid.get_pid(proc_name)
             # insert the items to queue
-            if pids != '-1':
+            #print pids 
+            # the process exist
+            if pids != -1:
                 for pid in pids:
                     # if the pid is not already in Queue, append it
                     pid_queue.put(pid)
-
-            time.sleep(2*timer)
+            	#time.sleep()
+	        # the process does not exist
+            #elif pids == '-1':
+		    #    time.sleep(1)
+            time.sleep(1)
     except Exception as Inst:
+        print Inst
         print "Got some Error in Queue Injector"
 
 
 def worker(pid, proc_name, timer = 120):
     i = pid
     try:
-        while True:
+        while threading.current_thread().signal:
+            # wait until the queue has some elements
             pid = pid_queue.get()
             print "pid: " + str(pid)
             logging.debug('starting')
             proc_data.get_stat(str(pid), proc_name, timer)
             logging.debug('Ending')
-            time.sleep(i + 2)
+            #time.sleep(i + 2)
             pid_queue.task_done()
     except Exception as Inst:
-        print "Got some Error"
+        print "Got some Error as worker"
 
 def run_threads(pids):
     #threads = []
@@ -81,7 +89,7 @@ def main():
     proc_name = "zerovm"
     timer =  120
     number_of_worker =  3
-
+    threads = []
     # get the matching pids to proc_name
     #pids =  proc_to_pid.get_pid(proc_name)
     # insert the items to queue
@@ -90,24 +98,35 @@ def main():
 
     # thread to insert data to Queue
 
-    data_injector = threading.Thread(target=queue_injector, args=(proc_name,timer))
+    data_injector = threading.Thread(target=queue_injector, args=( proc_name, timer))
     data_injector.setDaemon(True)
+    data_injector.signal = True
     data_injector.start()
-
+    threads.append(data_injector)
     # Set up some threads to fetch the enclosures
     for i in range(number_of_worker):
-        t_worker = threading.Thread(target=worker, args=(i, pid_queue,timer))
+        t_worker = threading.Thread(target=worker, args=( i, pid_queue,timer))
         t_worker.setDaemon(True)
+        t_worker.signal = True
         t_worker.start()
+        threads.append(t_worker)
 
 
 
     # Now wait for the queue to be empty, indicating that we have
     # processed all of the downloads.
-    print '*** Main thread waiting'
-    pid_queue.join()
-    print '*** Done'
-    time.sleep(100)
+    try:
+        while True:
+            print '*** Main thread waiting'
+            #pid_queue.join()
+            #print '*** Done'
+            time.sleep(50)
+    except KeyboardInterrupt:
+        print "Exiting"
+        for t in threads:
+            t.signal = False
+            print "Exit of Thread", t.getName()
+
     '''
     if pid is not null, then insert the pid to the queue
     '''

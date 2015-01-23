@@ -7,6 +7,7 @@ def write_to_csv(pid, process_name, csv_data):
     #pass
     #print csv_data
     #file name format : procname_pid_time.csv
+    process_name = "zerovm"
     time_format = '%Y%m%d_%H%M%S'
     current_time = time.strftime(time_format)
     file_extension = "csv"
